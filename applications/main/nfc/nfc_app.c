@@ -4,6 +4,7 @@
 
 #include <dolphin/dolphin.h>
 #include <loader/firmware_api/firmware_api.h>
+#include <evidence_hook/evidence_hook.h>
 
 bool nfc_custom_event_callback(void* context, uint32_t event) {
     furi_assert(context);
@@ -357,7 +358,12 @@ bool nfc_save_shadow_file(NfcApp* instance) {
 bool nfc_save(NfcApp* instance) {
     furi_assert(instance);
 
-    return nfc_save_internal(instance, NFC_APP_EXTENSION);
+    bool result = nfc_save_internal(instance, NFC_APP_EXTENSION);
+    // evidence_hook: register the saved capture into the inbox
+    if(result) {
+        evidence_hook_register(furi_string_get_cstr(instance->file_path), "nfc");
+    }
+    return result;
 }
 
 bool nfc_load_file(NfcApp* instance, FuriString* path, bool show_dialog) {

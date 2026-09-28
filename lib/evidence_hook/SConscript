@@ -1,0 +1,25 @@
+Import("env")
+
+# Register by adding "evidence_hook" to the libs list in lib/SConscript.
+# Matches the standard Unleashed module pattern (cf. lib/bit_lib/SConscript).
+
+env.Append(
+    LINT_SOURCES=[
+        Dir("."),
+    ],
+    CPPPATH=[
+        "#/lib/evidence_hook",
+    ],
+    SDK_HEADERS=[
+        File("evidence_hook.h"),
+    ],
+)
+
+libenv = env.Clone(FW_LIB_NAME="evidence_hook")
+libenv.ApplyLibFlags()
+
+sources = libenv.GlobRecursive("*.c*")
+
+lib = libenv.StaticLibrary("${FW_LIB_NAME}", sources)
+libenv.Install("${LIB_DIST_DIR}", lib)
+Return("lib")

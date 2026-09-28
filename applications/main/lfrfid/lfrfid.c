@@ -1,5 +1,6 @@
 #include "lfrfid_i.h"
 #include <dolphin/dolphin.h>
+#include <evidence_hook/evidence_hook.h>
 
 //TODO: use .txt file in resources for passwords.
 const uint32_t default_passwords[] = {
@@ -270,6 +271,10 @@ bool lfrfid_save_key(LfRfid* app) {
         LFRFID_APP_FILENAME_EXTENSION);
 
     result = lfrfid_save_key_data(app, app->file_path);
+    // evidence_hook: register the saved capture into the inbox
+    if(result) {
+        evidence_hook_register(furi_string_get_cstr(app->file_path), "rfid");
+    }
     return result;
 }
 

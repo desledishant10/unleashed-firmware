@@ -5,6 +5,7 @@
 #include <gui/modules/validators.h>
 #include <dolphin/dolphin.h>
 #include <toolbox/name_generator.h>
+#include <evidence_hook/evidence_hook.h>
 
 void subghz_scene_save_name_text_input_callback(void* context) {
     furi_assert(context);
@@ -149,6 +150,9 @@ bool subghz_scene_save_name_on_event(void* context, SceneManagerEvent event) {
                 } else {
                     subghz_file_name_clear(subghz);
                 }
+
+                // evidence_hook: register the saved capture into the inbox
+                evidence_hook_register(furi_string_get_cstr(subghz->file_path), "subghz");
 
                 scene_manager_next_scene(subghz->scene_manager, SubGhzSceneSaveSuccess);
                 if(scene_manager_has_previous_scene(subghz->scene_manager, SubGhzSceneSavedMenu)) {

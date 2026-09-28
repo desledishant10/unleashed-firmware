@@ -23,6 +23,7 @@ libs = env.BuildModules(
         "microtar",
         "mbedtls",
         "toolbox",
+        "evidence_hook",
         "libusb_stm32",
         "drivers",
         "fatfs",
